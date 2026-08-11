@@ -22,6 +22,12 @@ artifacts/runs/
 artifacts/cache/
 models/
 
+# Pre-submission manuscript drafts stay local/private until publication policy permits release
+paper/manuscript.md
+paper/*.docx
+paper/*.pdf
+paper/private/
+
 # Keep lightweight registries/manifests if intentionally added
 !artifacts/.gitkeep
 
