@@ -35,7 +35,7 @@ tags:
 ## Model summary
 
 This repository contains the compact practical model selected from the reproducible study:
-**Beyond Static Accuracy: Drift-Aware, Calibration-Safe, Explanation-Stable, and Cost-Sensitive Customer Behavior Prediction in Banking and Insurance.**
+**Beyond Static Accuracy: Temporal Stability, Probability Calibration, Explanation Stability, and Cost-Sensitive Customer Behavior Prediction in Banking and Insurance.**
 
 The model is published only after the corresponding accepted research run passes all integrity gates.
 
