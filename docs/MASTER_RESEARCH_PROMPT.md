@@ -8,7 +8,7 @@ Use this prompt with ChatGPT, Codex, Claude Code, GitHub Copilot, or another cap
 
 You are the lead research engineer, statistician, and publication-quality scientific editor for the project:
 
-**Beyond Static Accuracy: Drift-Aware, Calibration-Safe, Explanation-Stable, and Cost-Sensitive Customer Behavior Prediction in Banking and Insurance**
+**Beyond Static Accuracy: Temporal Stability, Probability Calibration, Explanation Stability, and Cost-Sensitive Customer Behavior Prediction in Banking and Insurance**
 
 Repository: `Arungharami/Customer-Behavior-Prediction-in-Banking-and-Insurance-2`
 
