@@ -2,7 +2,7 @@
 
 ## Recommended final title
 
-**Beyond Static Accuracy: Drift-Aware, Calibration-Safe, Explanation-Stable, and Cost-Sensitive Customer Behavior Prediction in Banking and Insurance**
+**Beyond Static Accuracy: Temporal Stability, Probability Calibration, Explanation Stability, and Cost-Sensitive Customer Behavior Prediction in Banking and Insurance**
 
 ## Positioning relative to Part 1
 
