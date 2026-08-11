@@ -2,7 +2,7 @@
 
 ## Research title
 
-**Beyond Static Accuracy: Drift-Aware, Calibration-Safe, Explanation-Stable, and Cost-Sensitive Customer Behavior Prediction in Banking and Insurance**
+**Beyond Static Accuracy: Temporal Stability, Probability Calibration, Explanation Stability, and Cost-Sensitive Customer Behavior Prediction in Banking and Insurance**
 
 This repository is the reproducibility package for a second-stage research study that extends a previously published applied customer-behavior framework. Part 2 is designed as a **new empirical study**, not a rewrite of Part 1.
 
