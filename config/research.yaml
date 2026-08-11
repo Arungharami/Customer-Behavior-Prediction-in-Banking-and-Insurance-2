@@ -1,5 +1,5 @@
 project:
-  title: "Beyond Static Accuracy: Drift-Aware, Calibration-Safe, Explanation-Stable, and Cost-Sensitive Customer Behavior Prediction in Banking and Insurance"
+  title: "Beyond Static Accuracy: Temporal Stability, Probability Calibration, Explanation Stability, and Cost-Sensitive Customer Behavior Prediction in Banking and Insurance"
   seed: 20260811
   artifact_root: artifacts/runs
   accepted_run_pointer: artifacts/latest.json
@@ -129,7 +129,7 @@ publication:
     - Abstract
     - Introduction
     - Literature Review
-    - Methods and Materials
+    - Methods
     - Results
     - Discussion and Implications
     - Conclusion
