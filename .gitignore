@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# Credentials / secrets
+kaggle.json
+.kaggle/
+*.token
+secrets/
+
+# Raw/restricted data
+data/raw/
+data/kaggle/
+*.zip
+*.7z
+
+# Generated artifacts
+artifacts/runs/
+artifacts/cache/
+models/
+
+# Keep lightweight registries/manifests if intentionally added
+!artifacts/.gitkeep
+
+# Notebook / IDE
+.ipynb_checkpoints/
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
