@@ -1,0 +1,136 @@
+project:
+  title: "Beyond Static Accuracy: Drift-Aware, Calibration-Safe, Explanation-Stable, and Cost-Sensitive Customer Behavior Prediction in Banking and Insurance"
+  seed: 20260811
+  artifact_root: artifacts/runs
+  accepted_run_pointer: artifacts/latest.json
+
+integrity:
+  fail_on_missing_results: true
+  allow_placeholder_results_in_manuscript: false
+  require_git_commit: true
+  require_data_manifest: true
+  require_environment_snapshot: true
+
+# Raw Kaggle competition files must stay local and must not be committed.
+datasets:
+  home_credit_stability:
+    enabled: true
+    source_type: kaggle_competition
+    slug: home-credit-credit-risk-model-stability
+    role: primary_temporal_benchmark
+    target: target
+    id_column: case_id
+    time_column: WEEK_NUM
+    notes: "Use competition-provided temporal index and competition rules."
+  bank_marketing:
+    enabled: true
+    source_type: kaggle_dataset_or_uci
+    role: banking_product_uptake
+    target: y
+    time_ordered: true
+    drop_predeployment_leakage_columns:
+      - duration
+    notes: "Prefer bank-full.csv / bank-additional-full.csv with original date ordering."
+  porto_seguro:
+    enabled: true
+    source_type: kaggle_competition
+    slug: porto-seguro-safe-driver-prediction
+    role: insurance_claim_propensity
+    target: target
+    id_column: id
+  ieee_cis_fraud:
+    enabled: false
+    source_type: kaggle_competition
+    slug: ieee-fraud-detection
+    role: optional_fraud_stress_test
+    target: isFraud
+    time_column: TransactionDT
+
+splits:
+  temporal:
+    train_fraction: 0.60
+    calibration_fraction: 0.20
+    test_fraction: 0.20
+    min_windows: 5
+  random_baseline:
+    enabled: true
+    test_size: 0.20
+    stratified: true
+
+models:
+  logistic_regression:
+    enabled: true
+    class_weight: balanced
+  random_forest:
+    enabled: true
+  xgboost:
+    enabled: true
+  lightgbm:
+    enabled: true
+  catboost:
+    enabled: true
+  stability_ensemble:
+    enabled: true
+    build_only_after_baselines: true
+  tabular_foundation_model:
+    enabled: false
+    exploratory_only: true
+
+calibration:
+  methods:
+    - none
+    - sigmoid
+    - isotonic
+  select_on: brier_score
+
+metrics:
+  discrimination:
+    - roc_auc
+    - average_precision
+    - precision
+    - recall
+    - f1
+  calibration:
+    - brier_score
+    - ece
+    - calibration_slope
+    - calibration_intercept
+  operational:
+    capacities: [0.01, 0.05, 0.10, 0.15, 0.20]
+  bootstrap:
+    n_resamples: 1000
+    confidence: 0.95
+
+shift_monitoring:
+  psi_bins: 10
+  psi_warning: 0.10
+  psi_alert: 0.25
+  shap_top_k: [10, 20]
+
+complexity:
+  warmup_predictions: 100
+  latency_repeats: 20
+  batch_sizes: [1, 100, 1000]
+  record_peak_memory: true
+  record_model_size: true
+
+required_ablations:
+  - remove_temporal_features
+  - remove_relational_features_if_available
+  - uncalibrated_vs_calibrated
+  - best_single_booster_vs_ensemble
+  - random_vs_temporal_split
+  - accuracy_only_vs_stability_aware_selection
+
+publication:
+  figure_count: 10
+  table_count: 9
+  manuscript_sections:
+    - Abstract
+    - Introduction
+    - Literature Review
+    - Methods and Materials
+    - Results
+    - Discussion and Implications
+    - Conclusion
+    - References
