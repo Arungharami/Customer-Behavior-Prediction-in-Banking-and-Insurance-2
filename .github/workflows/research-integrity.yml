@@ -1,0 +1,30 @@
+name: Research integrity
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy pandas scipy scikit-learn joblib pytest
+      - name: Compile research code
+        run: python -m compileall src scripts
+      - name: Run integrity utility tests
+        run: pytest -q tests/test_research_utils.py
+      - name: Check forbidden secrets are not tracked
+        shell: bash
+        run: |
+          if git ls-files | grep -E '(^|/)kaggle\.json$|(^|/)\.env$|(^|/)secrets/' ; then
+            echo 'Forbidden credential file is tracked.'
+            exit 1
+          fi
