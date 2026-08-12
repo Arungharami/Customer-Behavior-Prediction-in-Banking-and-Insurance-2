@@ -1,0 +1,38 @@
+name: Research Portal CI
+
+on:
+  pull_request:
+    paths:
+      - "app/**"
+      - "package.json"
+      - "tsconfig.json"
+      - "next.config.ts"
+      - "vercel.json"
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "package.json"
+      - "tsconfig.json"
+      - "next.config.ts"
+      - "vercel.json"
+
+permissions:
+  contents: read
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm install
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Production build
+        run: npm run build

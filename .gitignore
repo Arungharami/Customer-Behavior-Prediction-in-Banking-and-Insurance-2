@@ -31,6 +31,17 @@ paper/private/
 # Keep lightweight registries/manifests if intentionally added
 !artifacts/.gitkeep
 
+# Next.js / Vercel research portal
+node_modules/
+.next/
+out/
+.vercel/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
 # Notebook / IDE
 .ipynb_checkpoints/
 .vscode/
