@@ -1,0 +1,15 @@
+.git/
+.github/
+.pytest_cache/
+.pytest-tmp/
+.venv/
+node_modules/
+.next/
+artifacts/
+data/
+notebooks/
+paper/
+tests/
+__pycache__/
+*.pyc
+.env*
