@@ -188,6 +188,16 @@ button, input, textarea, select { font: inherit; }
 .statusBoardHeader span { font-size:12px; font-weight:850; }
 .statusBoardHeader small { color:var(--muted); font-size:10px; }
 .statusRow { display:grid; grid-template-columns:22px 1fr auto; gap:12px; align-items:center; min-height:64px; padding:0 22px; border-bottom:1px solid #f0f2f5; }
+.statusRow { grid-template-columns:170px 1fr auto; }
+.stateBadge { display:inline-flex; width:max-content; padding:6px 9px; border-radius:999px; font:750 9px/1 ui-monospace,monospace; letter-spacing:.04em; }
+.state-PROTOCOL_DEFINED { color:#175cd3; background:#eff8ff; }
+.state-NOT_EXECUTED { color:#93370d; background:#fffaeb; }
+.state-EXECUTED { color:#344054; background:#f2f4f7; }
+.state-FAILED { color:#b42318; background:#fef3f2; }
+.state-VERIFIED { color:#027a48; background:#ecfdf3; }
+.evidencePanel { min-height:390px; display:flex; flex-direction:column; justify-content:space-between; }
+.evidencePanel h2 { margin:70px 0 8px; font-size:44px; letter-spacing:-.05em; }
+.evidencePanel p { color:#94a3b8; line-height:1.6; }
 .statusRow:last-child { border-bottom:0; }
 .statusRow strong { font-size:12px; }
 .statusRow small { color:var(--muted); font-size:10px; text-align:right; }
@@ -253,7 +263,7 @@ button, input, textarea, select { font: inherit; }
   .researchQuestion { grid-template-columns:1fr; }
   .modelRow { grid-template-columns:70px 1fr; padding:14px 16px; }
   .modelRow small { grid-column:2; }
-  .statusRow { grid-template-columns:20px 1fr; padding:12px 18px; }
+  .statusRow { grid-template-columns:1fr; padding:16px 18px; }
   .statusRow small { grid-column:2; text-align:left; }
   .folderGrid { grid-template-columns:1fr; }
   .ctaCard, .footerGrid { grid-template-columns:1fr; gap:30px; }

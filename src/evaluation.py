@@ -25,6 +25,7 @@ from sklearn.metrics import (
     recall_score,
     roc_auc_score,
 )
+from sklearn.linear_model import LogisticRegression
 
 
 def expected_calibration_error(y_true, y_prob, n_bins: int = 10) -> float:
@@ -56,7 +57,35 @@ def threshold_metrics(y_true, y_prob, threshold: float = 0.5) -> dict:
         "f1": float(f1_score(y_true, y_pred, zero_division=0)),
         "brier_score": float(brier_score_loss(y_true, y_prob)),
         "ece_10": expected_calibration_error(y_true, y_prob, n_bins=10),
+        **calibration_slope_intercept(y_true, y_prob),
     }
+
+
+def calibration_slope_intercept(y_true, y_prob, eps: float = 1e-6) -> dict:
+    """Fit outcome ~ logit(probability); ideal intercept=0 and slope=1."""
+    y_true = np.asarray(y_true).astype(int)
+    y_prob = np.clip(np.asarray(y_prob, dtype=float), eps, 1 - eps)
+    if len(np.unique(y_true)) < 2:
+        raise ValueError("Calibration slope requires both outcome classes.")
+    logits = np.log(y_prob / (1 - y_prob)).reshape(-1, 1)
+    model = LogisticRegression(C=1e6, solver="lbfgs", max_iter=2000).fit(logits, y_true)
+    return {"calibration_intercept": float(model.intercept_[0]),
+            "calibration_slope": float(model.coef_[0, 0])}
+
+
+def cost_sensitive_metrics(y_true, y_prob, threshold: float, false_positive_cost: float,
+                           false_negative_cost: float, true_positive_value: float = 0.0,
+                           true_negative_value: float = 0.0) -> dict:
+    """Return transparent confusion counts and normalized per-customer utility."""
+    y_true = np.asarray(y_true).astype(int)
+    y_pred = (np.asarray(y_prob) >= threshold).astype(int)
+    tp = int(((y_true == 1) & (y_pred == 1)).sum())
+    fp = int(((y_true == 0) & (y_pred == 1)).sum())
+    fn = int(((y_true == 1) & (y_pred == 0)).sum())
+    tn = int(((y_true == 0) & (y_pred == 0)).sum())
+    utility = tp * true_positive_value + tn * true_negative_value - fp * false_positive_cost - fn * false_negative_cost
+    return {"threshold": float(threshold), "tp": tp, "fp": fp, "fn": fn, "tn": tn,
+            "total_utility": float(utility), "utility_per_customer": float(utility / len(y_true))}
 
 
 def capacity_metrics(y_true, y_prob, capacities=(0.01, 0.05, 0.10, 0.15, 0.20)) -> pd.DataFrame:

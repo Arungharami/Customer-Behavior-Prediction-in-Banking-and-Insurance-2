@@ -37,9 +37,18 @@ def main() -> None:
     run_dir = args.run_dir.resolve()
     failures: list[str] = []
 
-    for required in ["config_snapshot.yaml", "environment.txt", "git_commit.txt", "data_manifest.json"]:
+    for required in ["config_snapshot.yaml", "environment.txt", "git_commit.txt", "data_manifest.json",
+                     "evidence_registry.json", "run_status.json"]:
         if not (run_dir / required).exists():
             failures.append(f"missing run metadata: {required}")
+
+    registry_path = run_dir / "evidence_registry.json"
+    if registry_path.exists():
+        registry = json.loads(registry_path.read_text(encoding="utf-8"))
+        non_verified = [item["id"] for item in registry.get("items", [])
+                        if item.get("id") != "preflight" and item.get("state") != "VERIFIED"]
+        if non_verified:
+            failures.append(f"evidence registry contains non-verified publication items: {non_verified}")
 
     figures = run_dir / "figures"
     tables = run_dir / "tables"

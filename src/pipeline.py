@@ -119,6 +119,19 @@ def initialize_run(config_path: Path, run_id: str | None = None) -> Path:
     (run_dir / "run_status.json").write_text(
         json.dumps(status, indent=2, sort_keys=True), encoding="utf-8"
     )
+    registry = {
+        "schema_version": 1,
+        "run_id": run_id,
+        "items": [
+            {"id": "preflight", "state": "FAILED" if missing else "EXECUTED",
+             "evidence": ["data_manifest.json", "config_snapshot.yaml", "environment.txt"]},
+            {"id": "model_results", "state": "NOT_EXECUTED", "evidence": []},
+            {"id": "publication_artifacts", "state": "NOT_EXECUTED", "evidence": []},
+        ],
+    }
+    (run_dir / "evidence_registry.json").write_text(
+        json.dumps(registry, indent=2, sort_keys=True), encoding="utf-8"
+    )
 
     print(json.dumps(status, indent=2))
     if missing:
