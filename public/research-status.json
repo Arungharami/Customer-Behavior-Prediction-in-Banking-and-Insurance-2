@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "generatedFrom": "repository audit",
+  "summary": {"protocolDefined": 6, "executed": 0, "notExecuted": 5, "failed": 0, "verified": 0},
+  "items": [
+    {"id":"provenance","label":"Dataset provenance and manifest contract","state":"PROTOCOL_DEFINED","note":"Source roles and restricted-data rules defined"},
+    {"id":"temporal","label":"Frozen temporal evaluation","state":"PROTOCOL_DEFINED","note":"Ordered train/calibration/test manifest implemented"},
+    {"id":"leakage","label":"Leakage-safe preprocessing","state":"PROTOCOL_DEFINED","note":"Deployment feature boundary specified; dataset adapters pending"},
+    {"id":"models","label":"Five baselines and stability ensemble","state":"PROTOCOL_DEFINED","note":"Factories defined; training not executed"},
+    {"id":"calibration","label":"Calibration and uncertainty","state":"PROTOCOL_DEFINED","note":"Brier, ECE, slope/intercept and bootstrap utilities defined"},
+    {"id":"operations","label":"Capacity, cost and efficiency analysis","state":"PROTOCOL_DEFINED","note":"Metric contracts defined"},
+    {"id":"home-credit-run","label":"Home Credit benchmark","state":"NOT_EXECUTED","note":"Authorized local competition data required"},
+    {"id":"bank-run","label":"UCI Bank Marketing validation","state":"NOT_EXECUTED","note":"Dataset adapter and run required"},
+    {"id":"porto-run","label":"Porto Seguro validation","state":"NOT_EXECUTED","note":"Authorized local competition data required"},
+    {"id":"verified-results","label":"Verified tables and figures","state":"NOT_EXECUTED","note":"No empirical artifacts accepted"},
+    {"id":"manuscript","label":"Results-bearing manuscript","state":"NOT_EXECUTED","note":"Locked until publication gate passes"}
+  ]
+}

@@ -83,6 +83,20 @@ calibration:
     - isotonic
   select_on: brier_score
 
+preprocessing:
+  fit_scope: train_only
+  unknown_categories: ignore
+  numeric_imputation: median
+  categorical_imputation: most_frequent
+  require_feature_availability_manifest: true
+
+operational_utility:
+  # Values are sensitivity scenarios, not institution-approved monetary claims.
+  false_positive_cost_grid: [1, 2, 5]
+  false_negative_cost_grid: [2, 5, 10, 20]
+  true_positive_value_grid: [0, 2, 5]
+  require_domain_owner_approval_for_deployment_claims: true
+
 metrics:
   discrimination:
     - roc_auc
