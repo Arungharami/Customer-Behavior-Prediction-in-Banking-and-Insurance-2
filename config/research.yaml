@@ -1,5 +1,5 @@
 project:
-  title: "Beyond Static Accuracy: Temporal Stability, Probability Calibration, Explanation Stability, and Cost-Sensitive Customer Behavior Prediction in Banking and Insurance"
+  title: "Beyond Static Accuracy: Drift-Aware, Explanation-Stable, and Cost-Sensitive Customer Behavior Prediction in Banking and Insurance"
   seed: 20260811
   artifact_root: artifacts/runs
   accepted_run_pointer: artifacts/latest.json
@@ -10,6 +10,8 @@ integrity:
   require_git_commit: true
   require_data_manifest: true
   require_environment_snapshot: true
+  require_feature_availability_manifest: true
+  require_claim_evidence_matrix: true
 
 # Raw Kaggle competition files must stay local and must not be committed.
 datasets:
@@ -21,16 +23,18 @@ datasets:
     target: target
     id_column: case_id
     time_column: WEEK_NUM
-    notes: "Use competition-provided temporal index and competition rules."
+    horizon_policy: task_native
+    notes: "Use competition-provided temporal index and applicable competition rules. Do not invent a 90-day target if the source does not support reconstruction."
   bank_marketing:
     enabled: true
-    source_type: kaggle_dataset_or_uci
+    source_type: original_source_or_authorized_mirror
     role: banking_product_uptake
     target: y
     time_ordered: true
+    horizon_policy: task_native
     drop_predeployment_leakage_columns:
       - duration
-    notes: "Prefer bank-full.csv / bank-additional-full.csv with original date ordering."
+    notes: "Prefer original UCI release. Exclude duration from any pre-contact deployment-style model because it is only known after the call."
   porto_seguro:
     enabled: true
     source_type: kaggle_competition
@@ -38,6 +42,7 @@ datasets:
     role: insurance_claim_propensity
     target: target
     id_column: id
+    horizon_policy: task_native
   ieee_cis_fraud:
     enabled: false
     source_type: kaggle_competition
@@ -45,17 +50,33 @@ datasets:
     role: optional_fraud_stress_test
     target: isFraud
     time_column: TransactionDT
+    horizon_policy: task_native
+
+prediction_time_integrity:
+  preferred_horizon_days: 90
+  require_exact_horizon_reconstruction: true
+  exclude_task_if_required_horizon_not_reconstructible: false
+  allow_task_native_horizon_with_explicit_reporting: true
 
 splits:
-  temporal:
+  rolling_origin:
+    enabled: true
+    min_folds: 3
+    expanding_train: true
+    require_non_overlapping_future_test_periods: true
+  calibration:
+    required: true
+    must_precede_test_period: true
+  static_temporal_partition:
+    enabled_for_preflight: true
     train_fraction: 0.60
     calibration_fraction: 0.20
     test_fraction: 0.20
-    min_windows: 5
   random_baseline:
     enabled: true
     test_size: 0.20
     stratified: true
+    use_only_when_methodologically_valid: true
 
 models:
   logistic_regression:
@@ -65,13 +86,28 @@ models:
     enabled: true
   xgboost:
     enabled: true
+  part1_stack:
+    enabled: true
+    base_models:
+      - random_forest
+      - xgboost
+    meta_model: logistic_regression
+    execute_only_if_faithfully_reproducible: true
   lightgbm:
     enabled: true
+    advanced_baseline: true
   catboost:
     enabled: true
-  stability_ensemble:
+    advanced_baseline: true
+  part2_stability_ensemble:
     enabled: true
     build_only_after_baselines: true
+    base_models:
+      - xgboost
+      - lightgbm
+      - catboost
+    meta_model: logistic_regression
+    label_as_new_part2_model: true
   tabular_foundation_model:
     enabled: false
     exploratory_only: true
@@ -82,6 +118,7 @@ calibration:
     - sigmoid
     - isotonic
   select_on: brier_score
+  fit_on_future_test: false
 
 preprocessing:
   fit_scope: train_only
@@ -95,7 +132,9 @@ operational_utility:
   false_positive_cost_grid: [1, 2, 5]
   false_negative_cost_grid: [2, 5, 10, 20]
   true_positive_value_grid: [0, 2, 5]
+  intervention_cost_grid: [0, 1, 2]
   require_domain_owner_approval_for_deployment_claims: true
+  threshold_selection_partition: calibration
 
 metrics:
   discrimination:
@@ -103,9 +142,12 @@ metrics:
     - average_precision
     - precision
     - recall
+    - specificity
     - f1
+    - confusion_matrix
   calibration:
     - brier_score
+    - log_loss
     - ece
     - calibration_slope
     - calibration_intercept
@@ -114,37 +156,79 @@ metrics:
   bootstrap:
     n_resamples: 1000
     confidence: 0.95
+    grouped_when_repeated_entities: true
 
 shift_monitoring:
   psi_bins: 10
-  psi_warning: 0.10
-  psi_alert: 0.25
+  candidate_numeric_metrics:
+    - psi
+    - ks
+    - wasserstein
+  candidate_distribution_metrics:
+    - jensen_shannon
   shap_top_k: [10, 20]
+  distinguish_covariate_from_concept_drift: true
+
+explainability:
+  primary_method: shap
+  cross_check_method: permutation_importance
+  require_saved_source_arrays: true
+  stability_metrics:
+    - spearman_rank_correlation
+    - jaccard_top_k
+    - rank_displacement
+    - sign_consistency_when_defined
 
 complexity:
   warmup_predictions: 100
   latency_repeats: 20
   batch_sizes: [1, 100, 1000]
+  record_training_time: true
   record_peak_memory: true
   record_model_size: true
+  record_throughput: true
 
 required_ablations:
-  - remove_temporal_features
-  - remove_relational_features_if_available
+  - temporal_vs_random_evaluation
+  - remove_key_feature_groups
   - uncalibrated_vs_calibrated
-  - best_single_booster_vs_ensemble
-  - random_vs_temporal_split
-  - accuracy_only_vs_stability_aware_selection
+  - simple_vs_complex_models
+  - alternative_temporal_windows
+  - alternative_random_seeds
+  - class_weighting_strategies
+
+statistics:
+  paired_when_common_evaluation_units: true
+  report_fold_level_values: true
+  report_effect_sizes_when_meaningful: true
+  multiplicity_adjustment: holm_if_confirmatory_family
+  avoid_invalid_independence_assumptions: true
 
 publication:
-  figure_count: 10
-  table_count: 9
+  figure_count: 9
+  table_count: 11
   manuscript_sections:
+    - Title
     - Abstract
+    - Keywords
     - Introduction
-    - Literature Review
-    - Methods
+    - Research Gap and Contributions
+    - Related Work
+    - Problem Formulation
+    - Data and Prediction Tasks
+    - Methodology
+    - Temporal Evaluation Protocol
+    - Drift Analysis
+    - Calibration Analysis
+    - Explainability and Explanation Stability
+    - Cost-Sensitive Decision Framework
+    - Experimental Setup
     - Results
-    - Discussion and Implications
+    - Robustness and Ablation Analysis
+    - Discussion
+    - Responsible-AI and Deployment Considerations
+    - Limitations
+    - Threats to Validity
+    - Reproducibility and Artifact Availability
     - Conclusion
     - References

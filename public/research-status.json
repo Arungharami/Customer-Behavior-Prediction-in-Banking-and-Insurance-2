@@ -1,18 +1,117 @@
 {
-  "schemaVersion": 1,
-  "generatedFrom": "repository audit",
-  "summary": {"protocolDefined": 6, "executed": 0, "notExecuted": 5, "failed": 0, "verified": 0},
+  "schemaVersion": 2,
+  "generatedFrom": "Stage 0-2 repository/manuscript/provenance audit",
+  "generatedAt": "2026-08-15",
+  "summary": {
+    "protocolDefined": 8,
+    "executed": 0,
+    "verified": 2,
+    "blocked": 6,
+    "notExecuted": 7
+  },
+  "overallState": "BLOCKED_DATA_ACCESS_AND_PROVENANCE",
   "items": [
-    {"id":"provenance","label":"Dataset provenance and manifest contract","state":"PROTOCOL_DEFINED","note":"Source roles and restricted-data rules defined"},
-    {"id":"temporal","label":"Frozen temporal evaluation","state":"PROTOCOL_DEFINED","note":"Ordered train/calibration/test manifest implemented"},
-    {"id":"leakage","label":"Leakage-safe preprocessing","state":"PROTOCOL_DEFINED","note":"Deployment feature boundary specified; dataset adapters pending"},
-    {"id":"models","label":"Five baselines and stability ensemble","state":"PROTOCOL_DEFINED","note":"Factories defined; training not executed"},
-    {"id":"calibration","label":"Calibration and uncertainty","state":"PROTOCOL_DEFINED","note":"Brier, ECE, slope/intercept and bootstrap utilities defined"},
-    {"id":"operations","label":"Capacity, cost and efficiency analysis","state":"PROTOCOL_DEFINED","note":"Metric contracts defined"},
-    {"id":"home-credit-run","label":"Home Credit benchmark","state":"NOT_EXECUTED","note":"Authorized local competition data required"},
-    {"id":"bank-run","label":"UCI Bank Marketing validation","state":"NOT_EXECUTED","note":"Dataset adapter and run required"},
-    {"id":"porto-run","label":"Porto Seguro validation","state":"NOT_EXECUTED","note":"Authorized local competition data required"},
-    {"id":"verified-results","label":"Verified tables and figures","state":"NOT_EXECUTED","note":"No empirical artifacts accepted"},
-    {"id":"manuscript","label":"Results-bearing manuscript","state":"NOT_EXECUTED","note":"Locked until publication gate passes"}
+    {
+      "id": "stage0-audit",
+      "label": "Repository and manuscript audit",
+      "state": "VERIFIED",
+      "note": "Stage 0 audit completed; protocol scaffold is present, empirical readiness is blocked."
+    },
+    {
+      "id": "stage1-freeze",
+      "label": "Research questions and contribution freeze",
+      "state": "VERIFIED",
+      "note": "RQ1-RQ6, model benchmark, temporal protocol, metrics, drift/XAI/cost rules, and publication registry are frozen."
+    },
+    {
+      "id": "provenance",
+      "label": "Dataset provenance and licensing",
+      "state": "BLOCKED",
+      "note": "UCI Bank Marketing provenance/license verified; Home Credit and Porto Seguro access/rules/redistribution require validation."
+    },
+    {
+      "id": "prediction-time-audit",
+      "label": "Prediction-time feature availability audit",
+      "state": "BLOCKED",
+      "note": "Template created and known Bank Marketing duration leakage recorded; full audit requires actual dataset schemas."
+    },
+    {
+      "id": "temporal",
+      "label": "Rolling-origin temporal evaluation",
+      "state": "PROTOCOL_DEFINED",
+      "note": "Ordered train/calibration/test primitive exists; rolling-origin fold generator and dataset-specific boundaries remain to be implemented."
+    },
+    {
+      "id": "leakage",
+      "label": "Leakage-safe preprocessing",
+      "state": "PROTOCOL_DEFINED",
+      "note": "Train-only preprocessing contract defined; dataset adapters and executable leakage tests are pending."
+    },
+    {
+      "id": "models",
+      "label": "Required model benchmark",
+      "state": "PROTOCOL_DEFINED",
+      "note": "LR/RF/XGB/LightGBM/CatBoost factories exist; Part 1-compatible stack must be distinguished from the new Part 2 stack."
+    },
+    {
+      "id": "calibration",
+      "label": "Calibration and uncertainty",
+      "state": "PROTOCOL_DEFINED",
+      "note": "Metric utilities exist; leakage-safe Platt/isotonic execution and fold-level artifacts are NOT_EXECUTED."
+    },
+    {
+      "id": "drift",
+      "label": "Temporal drift analysis",
+      "state": "PROTOCOL_DEFINED",
+      "note": "Numeric PSI/Wasserstein helpers exist; full feature/prediction/performance/calibration drift suite is NOT_EXECUTED."
+    },
+    {
+      "id": "xai-stability",
+      "label": "SHAP explanation-stability analysis",
+      "state": "BLOCKED",
+      "note": "Rank-stability helper exists; SHAP execution module and empirical attribution artifacts are not present."
+    },
+    {
+      "id": "decision-analysis",
+      "label": "Cost-sensitive decision analysis",
+      "state": "PROTOCOL_DEFINED",
+      "note": "Scenario/capacity metrics exist; threshold selection and empirical sensitivity analysis are NOT_EXECUTED."
+    },
+    {
+      "id": "home-credit-run",
+      "label": "Home Credit benchmark",
+      "state": "NOT_EXECUTED",
+      "note": "Authorized local competition data and rule validation required."
+    },
+    {
+      "id": "bank-run",
+      "label": "UCI Bank Marketing benchmark",
+      "state": "NOT_EXECUTED",
+      "note": "Original-source data must be downloaded, hashed, audited, and adapted before execution."
+    },
+    {
+      "id": "porto-run",
+      "label": "Porto Seguro external validation",
+      "state": "NOT_EXECUTED",
+      "note": "Authorized local competition data and rule validation required."
+    },
+    {
+      "id": "claim-evidence",
+      "label": "Claim-evidence matrix",
+      "state": "PROTOCOL_DEFINED",
+      "note": "CSV schema created; no quantitative claims may be verified until accepted experiment artifacts exist."
+    },
+    {
+      "id": "verified-results",
+      "label": "Verified figures and tables",
+      "state": "NOT_EXECUTED",
+      "note": "No empirical publication artifacts are accepted."
+    },
+    {
+      "id": "manuscript",
+      "label": "Results-bearing manuscript",
+      "state": "NOT_EXECUTED",
+      "note": "Locked until empirical and claim-evidence gates pass."
+    }
   ]
 }
