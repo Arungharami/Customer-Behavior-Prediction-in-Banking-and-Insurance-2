@@ -1,0 +1,4 @@
+dataset,feature,source,observation_time,prediction_time,available_at_prediction,leakage_risk,decision,justification
+bank_marketing,duration,UCI Bank Marketing,known only after marketing call completes,pre-contact scoring,false,HIGH,EXCLUDE,"Post-call duration is unavailable at the time of a pre-contact marketing decision and would create target-adjacent leakage."
+home_credit_stability,target,Home Credit competition,target label,scoring time,false,HIGH,EXCLUDE,"Outcome/target must never enter the predictor matrix."
+porto_seguro,target,Porto Seguro competition,target label,scoring time,false,HIGH,EXCLUDE,"Outcome/target must never enter the predictor matrix."
