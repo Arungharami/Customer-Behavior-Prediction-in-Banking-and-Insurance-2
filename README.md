@@ -157,3 +157,8 @@ The manuscript is submission-ready only when all of the following are true:
 - `scripts/research_gate.py` passes on the accepted run.
 
 See `docs/MASTER_RESEARCH_PROMPT.md` for the full execution prompt and `docs/PAPER_BLUEPRINT.md` for the publication architecture.
+
+
+## Engineering review
+
+See [the October 4 correctness review](docs/ENGINEERING_REVIEW_2026-10-04.md) for repairs, exact verification results, and the next implementation work.

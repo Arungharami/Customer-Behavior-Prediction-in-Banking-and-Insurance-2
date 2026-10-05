@@ -8,6 +8,10 @@ from scipy.stats import spearmanr, wasserstein_distance
 
 def population_stability_index(reference, current, bins: int = 10, eps: float = 1e-6) -> float:
     """Compute PSI using quantile bins estimated from the reference sample."""
+    if not isinstance(bins, int) or isinstance(bins, bool) or bins < 1:
+        raise ValueError("bins must be a positive integer")
+    if not np.isfinite(eps) or not 0 < eps < 1:
+        raise ValueError("eps must be finite and in (0, 1)")
     reference = np.asarray(reference, dtype=float)
     current = np.asarray(current, dtype=float)
     reference = reference[np.isfinite(reference)]
@@ -15,10 +19,16 @@ def population_stability_index(reference, current, bins: int = 10, eps: float = 
     if len(reference) == 0 or len(current) == 0:
         return float("nan")
     edges = np.unique(np.quantile(reference, np.linspace(0, 1, bins + 1)))
-    if len(edges) < 3:
-        return 0.0
-    edges[0] = -np.inf
-    edges[-1] = np.inf
+    if len(edges) == 1:
+        # Separate values below/equal/above a constant reference. Returning
+        # zero here would hide the disappearance of a formerly constant value.
+        value = edges[0]
+        edges = np.array([-np.inf, value, np.nextafter(value, np.inf), np.inf])
+    elif len(edges) == 2:
+        edges = np.array([-np.inf, edges[0] / 2 + edges[1] / 2, np.inf])
+    else:
+        edges[0] = -np.inf
+        edges[-1] = np.inf
     ref_counts, _ = np.histogram(reference, bins=edges)
     cur_counts, _ = np.histogram(current, bins=edges)
     ref_pct = np.clip(ref_counts / max(1, ref_counts.sum()), eps, None)
@@ -42,7 +52,9 @@ def numeric_drift_table(reference_df: pd.DataFrame, current_df: pd.DataFrame, co
             "reference_mean": float(np.mean(ref)),
             "current_mean": float(np.mean(cur)),
         })
-    return pd.DataFrame(rows).sort_values("psi", ascending=False).reset_index(drop=True)
+    return pd.DataFrame(rows, columns=[
+        "feature", "psi", "wasserstein", "reference_mean", "current_mean"
+    ]).sort_values("psi", ascending=False).reset_index(drop=True)
 
 
 def shap_rank_stability(early_mean_abs: pd.Series, late_mean_abs: pd.Series, top_k=(10, 20)) -> dict:
