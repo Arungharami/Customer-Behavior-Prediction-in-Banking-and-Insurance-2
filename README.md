@@ -1,5 +1,11 @@
 # Customer Behavior Prediction in Banking and Insurance - Part 2
 
+## Start here
+
+Read the reproducibility workflow below and the [paper blueprint](docs/PAPER_BLUEPRINT.md). This repository provides a protocol and evaluation utilities; empirical manuscript results remain pending authorized data and execution.
+
+**Help improve this project:** [Contribution guide](CONTRIBUTING.md) · [Issues](https://github.com/Arungharami/Customer-Behavior-Prediction-in-Banking-and-Insurance-2/issues)
+
 ## Research title
 
 **Beyond Static Accuracy: Temporal Stability, Probability Calibration, Explanation Stability, and Cost-Sensitive Customer Behavior Prediction in Banking and Insurance**
